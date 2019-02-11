@@ -1,0 +1,5 @@
+pour la formule du tp:
+d = y = labels 
+o = y predict
+
+ducoup formule td
