@@ -10,7 +10,7 @@ from utils import plot_training
 
 class KMeans(object):
     def __init__(self, n_clusters:int, max_iter:int, early_stopping:bool=False,
-                 tol:float=1e-4, display:bool=False) -> None:
+                 tol:float=1e-4, display:bool=True) -> None:
         self.n_clusters = n_clusters            # Nombre de clusters
         self.max_iter = max_iter                # Nombre d'itération
         self.early_stopping = early_stopping    # arrête l'apprentissage si 
@@ -112,7 +112,7 @@ class KMeans(object):
 
         return y
 
-    def fit(self, X:np.ndarray) -> None:
+    def fit(self, X:np.ndarray):
         """Apprentissage des centroides
         """
         # Récupère le nombre de données
@@ -175,9 +175,12 @@ class KMeans(object):
 
                 # affichage des clusters
                 if self.display:
+                    print("on affiche")
                     diff = abs(old_distance - current_distance)
                     metric.append(diff)
                     plot_training(i, X, y, self.cluster_centers, metric)
+
+        return y
 
     def score(self, X:np.ndarray, y:np.ndarray) -> float:
         """Calcule le score de pureté
