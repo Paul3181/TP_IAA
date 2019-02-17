@@ -3,9 +3,13 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/tp5/DONNEES_TP5" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tp4/Donnees" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.6.2 (C:\Users\pauld\AppData\Local\Programs\Python\Python36-32\python.exe)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PyDocumentationSettings">
+    <option name="renderExternalDocumentation" value="true" />
   </component>
   <component name="TestRunnerService">
     <option name="PROJECT_TEST_RUNNER" value="Unittests" />

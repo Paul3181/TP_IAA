@@ -41,19 +41,19 @@ class GaussianBayes(object):
                 val = -(0.5 * math.log(det[j])) - (0.5)*np.dot(np.dot(np.transpose(X[i] - self.mu[j]), (np.linalg.inv(self.sigma[k]))), X[i] - self.mu[j])
 
                 #rajout de la probabilité à priori
-                #val = val * self.priors[j]
+                val = val * self.priors[j]
 
                 #mise à jour classe
                 if(maxVal<(val)):
                     maxVal = (val)
-                    y[i] = val
-
-
-        #print("predict",y)
+                    #pour sortir le tableu des valeurs
+                    #y[i] = val
+                    y[i] = j
+        print(y)
         return y
 
     
-    def fit(self, X:np.ndarray, y:np.ndarray) -> None:
+    def fit(self, X:np.ndarray, y:np.ndarray):
         """Learning of parameters
         X : shape (n_data, n_features)
         y : shape (n_data)
@@ -71,9 +71,7 @@ class GaussianBayes(object):
             #calcul de la matrice
             self.sigma[i] = np.cov(X[y == i].T)
 
-        print("vecteur moyen \n",self.mu)
-
-        print("matrice covariance \n",self.sigma)
+        return self.mu, self.sigma
 
 
 

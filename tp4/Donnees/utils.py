@@ -1,6 +1,5 @@
 import csv
 from typing import Tuple
-
 import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 import numpy as np
@@ -67,21 +66,5 @@ def plot_training(data: np.ndarray, labels: np.ndarray) -> None:
     plt.pause(0.25)
     plt.show()
 
-def fun(x, y, z):
-  return int(z[x])
-
-def plot_vraissemblance(data: np.ndarray, labels: np.ndarray, z: np.ndarray) -> None:
 
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    x = y = np.arange(-3.0, 3.0, 0.05)
-    X, Y = np.meshgrid(x, y)
-    zs = np.array([fun(x, y, z) for x, y in zip(np.ravel(X), np.ravel(Y))])
-    Z = zs.reshape(X.shape)
-    ax.plot_surface(X, Y, Z)
-    ax.set_xlabel('X Label')
-    ax.set_ylabel('Y Label')
-    ax.set_zlabel('Z Label')
-
-    plt.show()

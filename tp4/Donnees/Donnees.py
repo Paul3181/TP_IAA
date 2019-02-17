@@ -1,8 +1,8 @@
-
 import matplotlib.image as img
 import numpy as np
+import math
 import matplotlib.pyplot as plt
-from utils import load_dataset, plot_training, plot_vraissemblance
+from utils import load_dataset, plot_training
 from bayes import GaussianBayes
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -33,46 +33,101 @@ def Pretraitement(name):
 
     return(sum_x/np_px, sum_y/np_px)
 
+def PretraitementAmeliore(name):
+    path = "./Fleurs/"
+    image = img.imread(path+name)
+    if image.dtype == np.float32:  # Si le résultat n'est pas un tableau d'entiers
+        image = (image * 255).astype(np.uint8)
+
+    np_px = 0
+    sum_x = 0
+    sum_y = 0
+
+    sum_c = 0
+    np_px_c = 0
+
+    #parcours de tout les pixels
+    for i in range(image.shape[0]):
+        for j in range(image.shape[1]):
+            if (i < (image.shape[0] / 4) or i > 3*(image.shape[0] / 4)) and (j < (image.shape[1] / 4) or j > 3*(image.shape[1] / 4)):
+                #normalisation
+                px = image[i,j]
+                tot = int(px[0])+int(px[1])+int(px[2])
+                x = px[0]/max(1,tot)
+                y = px[1] / max(1, tot)
+
+                sum_x += x
+                sum_y += y
+                np_px += 1
+            else:
+                # normalisation
+                px = image[i, j]
+                tot = int(px[0]) + int(px[1]) + int(px[2])
+                c = px[0] / max(1, tot)
+
+                sum_c += c
+                np_px_c += 1
 
 
-color, labels = load_dataset("./couleurs_moyennes.csv")
+    return(sum_x/np_px, sum_y/np_px, sum_c/np_px_c)
+
+
+def plot_vraissemblance(X: np.ndarray, Y: np.ndarray,Z) -> None:
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    for i in range(mu.shape[0]):
+        xd = [i[0] for i in X]
+        yd = [i[1] for i in X]
+        ax.scatter(xd[:10], yd[:10],Z[:10], c='blue')
+        ax.scatter(xd[10:20], yd[10:20],Z[10:20], c='green')
+        ax.scatter(xd[20:30], yd[20:30],Z[20:30], c='red')
+
+    ax.set_xlabel('r')
+    ax.set_ylabel('v')
+    ax.set_zlabel('Vraisemblance')
+
+    plt.show()
+
+
+color, labels = load_dataset("./couleurs_moyennes_amelioree.csv")
 
 #affichage nuage de point
 #plot_training(color,labels)
 
 # Instanciation de la classe GaussianB
-g = GaussianBayes()
+g = GaussianBayes(priors=[0.33,0.3,0.326])
 
 # Apprentissage
-g.fit(color, labels)
+mu, sig = g.fit(color, labels)
+
+#tab_proba = g.predict(color)
 
 #affichage vraissemblance
+#plot_vraissemblance(color,labels,tab_proba)
 
-tab_proba = g.predict(color)
-print(tab_proba)
+g.predict(color)
 
-
-plot_vraissemblance(color, labels, tab_proba)
+print(g.score(color,labels))
 
 
 """
 for i in range(n_fleurs):
     file_name = "ch"
     name = file_name + str(i+1) + ".png"
-    a, b = Pretraitement(name)
-    print(a,",",b,",",0)
+    a, b, c = PretraitementAmeliore(name)
+    print(a,",",b,",",c,",",0)
 
 for i in range(n_fleurs):
     file_name = "oe"
     name = file_name + str(i+1) + ".png"
-    a, b = Pretraitement(name)
-    print(a,",",b,",",1)
+    a, b, c = PretraitementAmeliore(name)
+    print(a,",",b,",",c,",",1)
 
 for i in range(n_fleurs):
     file_name = "pe"
     name = file_name + str(i+1) + ".png"
-    a, b = Pretraitement(name)
-    print(a,",",b,",",2)
+    a, b, c = PretraitementAmeliore(name)
+    print(a,",",b,",",c,",",2)
 """
 
 """
