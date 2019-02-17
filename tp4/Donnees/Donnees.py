@@ -49,7 +49,7 @@ def PretraitementAmeliore(name):
     #parcours de tout les pixels
     for i in range(image.shape[0]):
         for j in range(image.shape[1]):
-            if (i < (image.shape[0] / 4) or i > 3*(image.shape[0] / 4)) and (j < (image.shape[1] / 4) or j > 3*(image.shape[1] / 4)):
+            if (i < (image.shape[0] / 2) - 20 or i > (image.shape[0] / 2)+20) and (j < (image.shape[1] / 2)-20 or j > 3*(image.shape[1] / 2)+20):
                 #normalisation
                 px = image[i,j]
                 tot = int(px[0])+int(px[1])+int(px[2])
@@ -89,7 +89,7 @@ def plot_vraissemblance(X: np.ndarray, Y: np.ndarray,Z) -> None:
     plt.show()
 
 
-color, labels = load_dataset("./couleurs_moyennes_amelioree.csv")
+color, labels = load_dataset("./couleurs_moyennes_better.csv")
 
 #affichage nuage de point
 #plot_training(color,labels)
