@@ -5,7 +5,7 @@ Created on 08/02/19
 @author: Thomas Pellegrini
 """
 
-im='./images/matisse.jpg'
+im='./images/picasso.jpg'
 
 from scipy.misc import imread
 import matplotlib.pyplot as plt
@@ -17,9 +17,7 @@ from PIL import Image, ImageFilter
 
 def im_to_csv(data):
 
-    nb_pixel = data.shape[0] * data.shape[1]
-
-    with open('matisse.csv', 'w', newline='') as csvfile:
+    with open('picasso.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         #parcours de tout les pixels
         for i in range(data.shape[0]):
@@ -35,17 +33,11 @@ def recolorisation(name_image,data, y):
 
     im = Image.open('./images/'+name_image+'.jpg')
     im_reco = im
-    #im_reco.putpixel((1, 1), (0, 0, 250))
-    #im_reco.putpixel((3, 1), (0, 0, 250))
-
 
     colors = [(0,0,250), (250,0,0), (0,250,0),(153,51,102), (102,102,0), (51,0,0),]
 
     long = data.shape[0]
     larg = data.shape[1]
-
-    print(long)
-    print(larg)
 
     compt = 0
 
@@ -53,13 +45,11 @@ def recolorisation(name_image,data, y):
     for i in range(0,long):
         for j in range(0,larg):
             # recolorisation
-            #print(y[compt])
             im_reco.putpixel((j,i),colors[int(y[compt])])
-            #im_reco.putpixel((i,j), (50,150,50))
             compt += 1
 
 
-    im_reco.save('./images/' + name_image + '_recolorized.jpg', 'JPEG')
+    im_reco.save('./images/' + name_image + '_recolorized2.jpg', 'JPEG')
 
     return 0
 
@@ -71,13 +61,13 @@ if data.dtype == np.float32:  # Si le résultat n'est pas un tableau d'entiers
     data = (data * 255).astype(np.uint8)
 
 #normalisation
-#im_to_csv(data)
+im_to_csv(data)
 
 #chargement des données csv
-rv, labels = load_dataset('matisse.csv')
+rv, labels = load_dataset('picasso.csv')
 
 # initialisation de l'objet KMeans
-kmeans = KMeans(n_clusters=6,
+kmeans = KMeans(n_clusters=2,
                 max_iter=100,
                 early_stopping=True,
                 tol=1e-6,
@@ -86,7 +76,7 @@ kmeans = KMeans(n_clusters=6,
 # calcule les clusters
 classes = kmeans.fit(rv)
 
-recolorisation('matisse', data, classes)
+recolorisation('picasso', data, classes)
 
 
 
