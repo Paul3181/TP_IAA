@@ -5,7 +5,7 @@ Created on 08/02/19
 @author: Thomas Pellegrini
 """
 
-im='./images/picasso.jpg'
+im='./images/miro.jpg'
 
 from scipy.misc import imread
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ from PIL import Image, ImageFilter
 
 def im_to_csv(data):
 
-    with open('picasso.csv', 'w', newline='') as csvfile:
+    with open('miro.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         #parcours de tout les pixels
         for i in range(data.shape[0]):
@@ -27,15 +27,30 @@ def im_to_csv(data):
                 tot = int(px[0]) + int(px[1]) + int(px[2])
                 x = float(px[0] / max(1, tot))
                 y = float(px[1] / max(1, tot))
-                writer.writerow([x,y])
+                writer.writerow([x,y,0])
 
-def recolorisation(name_image,data, y):
+def recolorisation(name_image,data, y,clusters):
 
     im = Image.open('./images/'+name_image+'.jpg')
     im_reco = im
 
-    colors = [(0,0,250), (250,0,0), (0,250,0),(153,51,102), (102,102,0), (51,0,0),]
 
+    #colors = [(0,0,250), (250,0,0), (0,250,0),(153,51,102), (102,102,0), (51,0,0)]
+    #choix des couleurs pour la recoloration
+    colors = []
+    for i in clusters:
+        print(i)
+        #denormalisation
+        b = int((1-(i[0]+i[1]))*255)
+        if(b<=0):
+            b=0
+
+        c = (int(i[0]*255),int(i[1]*255),b)
+        print(c)
+
+        colors.append(c)
+
+    #print(colors)
     long = data.shape[0]
     larg = data.shape[1]
 
@@ -61,22 +76,24 @@ if data.dtype == np.float32:  # Si le résultat n'est pas un tableau d'entiers
     data = (data * 255).astype(np.uint8)
 
 #normalisation
-im_to_csv(data)
+#im_to_csv(data)
 
 #chargement des données csv
-rv, labels = load_dataset('picasso.csv')
+rv, labels = load_dataset('miro.csv')
 
 # initialisation de l'objet KMeans
-kmeans = KMeans(n_clusters=2,
+kmeans = KMeans(n_clusters=6,
                 max_iter=100,
                 early_stopping=True,
                 tol=1e-6,
-                display=True)
+                display=False)
 
 # calcule les clusters
-classes = kmeans.fit(rv)
+classes, clusters = kmeans.fit(rv)
 
-recolorisation('picasso', data, classes)
+
+#print(clusters)
+recolorisation('miro', data, classes, clusters)
 
 
 

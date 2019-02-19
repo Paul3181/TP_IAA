@@ -93,6 +93,7 @@ class KMeans(object):
         # nombre d'échantillons
         n_data = X.shape[0]
 
+
         y = np.ndarray(shape=(n_data,))
 
         infini = float('inf')
@@ -136,11 +137,14 @@ class KMeans(object):
             self.cluster_centers = np.ndarray(shape=(self.n_clusters,X.shape[1]))
 
             # centroides pris aleatoirement
+            #tableau de r pour recupere nb
+            rcentre = []
 
             for i in range(self.n_clusters):
                 r = random.randint(0,n_data-1)
 
                 self.cluster_centers[i] = X[r]
+                rcentre.append(r)
 
             # initialisation d'un paramètre permettant de stopper les itérations lors de la convergence
             stabilise = False
@@ -180,7 +184,9 @@ class KMeans(object):
                     metric.append(diff)
                     plot_training(i, X, y, self.cluster_centers, metric)
 
-        return y
+                print('on tourne')
+
+        return y, self.cluster_centers
 
     def score(self, X:np.ndarray, y:np.ndarray) -> float:
         """Calcule le score de pureté
