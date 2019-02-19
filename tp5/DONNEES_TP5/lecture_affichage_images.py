@@ -24,10 +24,15 @@ def im_to_csv(data):
             for j in range(data.shape[1]):
 
                 px = data[i, j]
+                """
                 tot = int(px[0]) + int(px[1]) + int(px[2])
                 x = float(px[0] / max(1, tot))
                 y = float(px[1] / max(1, tot))
-                writer.writerow([x,y,0])
+                z = float(px[2] / max(1, tot))
+                """
+
+                #pas besoin de normaliser...
+                writer.writerow([float(px[0]),float(px[1]),float(px[2]),0])
 
 def recolorisation(name_image,data, y,clusters):
 
@@ -41,11 +46,12 @@ def recolorisation(name_image,data, y,clusters):
     for i in clusters:
         print(i)
         #denormalisation
-        b = int((1-(i[0]+i[1]))*255)
-        if(b<=0):
-            b=0
+        #b = int((1-(i[0]+i[1]))*255)
+        #if(b<=0):
+        #    b=0
 
-        c = (int(i[0]*255),int(i[1]*255),b)
+        #c = (int(i[0]*255),int(i[1]*255),int(i[2]*255))
+        c = (int(i[0]), int(i[1]), int(i[2]))
         print(c)
 
         colors.append(c)
@@ -76,7 +82,7 @@ if data.dtype == np.float32:  # Si le résultat n'est pas un tableau d'entiers
     data = (data * 255).astype(np.uint8)
 
 #normalisation
-#im_to_csv(data)
+im_to_csv(data)
 
 #chargement des données csv
 rv, labels = load_dataset('miro.csv')
