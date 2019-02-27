@@ -5,10 +5,10 @@ Created on 08/02/19
 @author: Thomas Pellegrini
 """
 
-im='./images/miro.jpg'
+im='./images/joconde.jpg'
 
 from scipy.misc import imread
-import matplotlib.pyplot as plt
+import matplotlib.image as img
 import numpy as np
 import csv
 from utils import load_dataset
@@ -17,21 +17,12 @@ from PIL import Image, ImageFilter
 
 def im_to_csv(data):
 
-    with open('miro.csv', 'w', newline='') as csvfile:
+    with open('joconde.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         #parcours de tout les pixels
         for i in range(data.shape[0]):
             for j in range(data.shape[1]):
-
                 px = data[i, j]
-                """
-                tot = int(px[0]) + int(px[1]) + int(px[2])
-                x = float(px[0] / max(1, tot))
-                y = float(px[1] / max(1, tot))
-                z = float(px[2] / max(1, tot))
-                """
-
-                #pas besoin de normaliser...
                 writer.writerow([float(px[0]),float(px[1]),float(px[2]),0])
 
 def recolorisation(name_image,data, y,clusters):
@@ -39,29 +30,16 @@ def recolorisation(name_image,data, y,clusters):
     im = Image.open('./images/'+name_image+'.jpg')
     im_reco = im
 
-
-    #colors = [(0,0,250), (250,0,0), (0,250,0),(153,51,102), (102,102,0), (51,0,0)]
     #choix des couleurs pour la recoloration
     colors = []
     for i in clusters:
-        print(i)
-        #denormalisation
-        #b = int((1-(i[0]+i[1]))*255)
-        #if(b<=0):
-        #    b=0
-
-        #c = (int(i[0]*255),int(i[1]*255),int(i[2]*255))
         c = (int(i[0]), int(i[1]), int(i[2]))
-        print(c)
-
         colors.append(c)
 
-    #print(colors)
     long = data.shape[0]
     larg = data.shape[1]
 
     compt = 0
-
     #On parcours tout les pixels
     for i in range(0,long):
         for j in range(0,larg):
@@ -70,11 +48,27 @@ def recolorisation(name_image,data, y,clusters):
             compt += 1
 
 
-    im_reco.save('./images/' + name_image + '_recolorized2.jpg', 'JPEG')
+    im_reco.save('./images/' + name_image + '_recolorized_6clusters.jpg', 'JPEG')
 
     return 0
 
+def calculDiff(image1, image2):
+    im1 = img.imread('./images/' + image1 + '.jpg')
+    im2 = img.imread('./images/' + image2 + '.jpg')
 
+    diff = 0
+
+    # On parcours tout les pixels
+    for i in range(0, im1.shape[0]):
+        for j in range(0, im1.shape[1]):
+            px1 = im1[i, j]
+            px2 = im2[i, j]
+
+            diff += (abs(int(px1[0])-int(px2[0]))) + (abs(int(px1[1])-int(px2[1]))) + (abs(int(px1[2])-int(px2[2])))
+
+    diff = (diff/(im1.shape[0]*im1.shape[1]))/765
+
+    return diff
 
 #recuperation de l'image en npdarray
 data = imread(im)
@@ -82,10 +76,10 @@ if data.dtype == np.float32:  # Si le résultat n'est pas un tableau d'entiers
     data = (data * 255).astype(np.uint8)
 
 #normalisation
-im_to_csv(data)
+#im_to_csv(data)
 
 #chargement des données csv
-rv, labels = load_dataset('miro.csv')
+rv, labels = load_dataset('joconde.csv')
 
 # initialisation de l'objet KMeans
 kmeans = KMeans(n_clusters=6,
@@ -95,25 +89,17 @@ kmeans = KMeans(n_clusters=6,
                 display=False)
 
 # calcule les clusters
-classes, clusters = kmeans.fit(rv)
+#classes, clusters = kmeans.fit(rv)
 
 
 #print(clusters)
-recolorisation('miro', data, classes, clusters)
+#recolorisation('joconde', data, classes, clusters)
+
+
+
+#calcul de la diff entre 2 images de meme taille!
+print("diff =", calculDiff("joconde", "joconde_recolorized_6clusters"))
 
 
 
 
-
-
-
-
-
-
-
-
-
-#affichage
-#plt.imshow(data)
-#plt.axis('off')
-#plt.show()
